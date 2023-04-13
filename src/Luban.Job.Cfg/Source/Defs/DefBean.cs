@@ -160,21 +160,7 @@ namespace Luban.Job.Cfg.Defs
 
         public override void PreCompile()
         {
-            if (!string.IsNullOrEmpty(Parent))
-            {
-                if ((ParentDefType = (DefBean)AssemblyBase.GetDefType(Namespace, Parent)) == null)
-                {
-                    throw new Exception($"bean:'{FullName}' parent:'{Parent}' not exist");
-                }
-                if (ParentDefType.Children == null)
-                {
-                    ParentDefType.Children = new List<DefBeanBase>();
-                }
-                ParentDefType.Children.Add(this);
-            }
-
-            CollectHierarchyFields(HierarchyFields);
-
+            base.PreCompile();
             this.ExportFields = this.Fields.Select(f => (DefField)f).Where(f => f.NeedExport).ToList();
             this.HierarchyExportFields = this.HierarchyFields.Select(f => (DefField)f).Where(f => f.NeedExport).ToList();
         }
