@@ -10,6 +10,11 @@ namespace Luban.Job.Cfg.DataVisitors
     {
         public static ToPythonLiteralVisitor Ins { get; } = new();
 
+        public override string Accept(DBool type)
+        {
+            return type.Value ? "True" : "False";
+        }
+        
         public override string Accept(DText type)
         {
             return $"{{\"{DText.KEY_NAME}\":\"{type.Key}\",\"{DText.TEXT_NAME}\":\"{DataUtil.EscapeString(type.TextOfCurrentAssembly)}\"}}";
@@ -94,7 +99,7 @@ namespace Luban.Job.Cfg.DataVisitors
                     x.Append(',');
                 }
                 ++index;
-                x.Append('"').Append(e.Key.ToString()).Append('"');
+                x.Append(e.Key.Apply(this));
                 x.Append(':');
                 x.Append(e.Value.Apply(this));
             }
