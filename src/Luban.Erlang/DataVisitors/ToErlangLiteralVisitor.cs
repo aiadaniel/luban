@@ -22,6 +22,7 @@ using Luban.Datas;
 using Luban.DataVisitors;
 using Luban.Defs;
 using Luban.Utils;
+using System.Globalization;
 using System.Text;
 
 namespace Luban.Erlang.DataVisitors;
@@ -35,7 +36,7 @@ public class ToErlangLiteralVisitor : ToLiteralVisitorBase
         var x = new StringBuilder();
         if (type.Type.IsAbstractType)
         {
-            x.Append($"#{{name__ => \"{DataUtil.GetImplTypeName(type)}\"");
+            x.Append($"#{{'name__' => \"{DataUtil.GetImplTypeName(type)}\"");
             if (type.Fields.Count > 0)
             {
                 x.Append(',');
@@ -60,7 +61,7 @@ public class ToErlangLiteralVisitor : ToLiteralVisitorBase
                 x.Append(',');
             }
             first = false;
-            x.Append($"{defField.Name} => {f.Apply(this)}");
+            x.Append($"'{defField.Name}' => {f.Apply(this)}");
         }
         x.Append('}');
         return x.ToString();
@@ -100,6 +101,34 @@ public class ToErlangLiteralVisitor : ToLiteralVisitorBase
         var x = new StringBuilder();
         Append(type.Datas, x);
         return x.ToString();
+    }
+
+    public override string Accept(DFloat type)
+    {
+        return FormatFloat(type.Value);
+    }
+
+    public override string Accept(DDouble type)
+    {
+        return FormatFloat(type.Value);
+    }
+
+    // Erlang float literal requires digits on both sides of the decimal point (1.0e20, not 1e20 or 1E+20).
+    private static string FormatFloat(double value)
+    {
+        if (double.IsNaN(value) || double.IsInfinity(value))
+        {
+            throw new NotSupportedException($"erlang literal does not support float value '{value}'");
+        }
+        var s = value.ToString("R", CultureInfo.InvariantCulture);
+        int e = s.IndexOfAny(new[] { 'e', 'E' });
+        var mantissa = e < 0 ? s : s[..e];
+        var exponent = e < 0 ? "" : s[e..].ToLowerInvariant();
+        if (!mantissa.Contains('.'))
+        {
+            mantissa += ".0";
+        }
+        return mantissa + exponent;
     }
 
     public override string Accept(DMap type)

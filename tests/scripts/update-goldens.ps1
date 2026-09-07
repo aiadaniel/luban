@@ -26,7 +26,7 @@ function Invoke-Gen([string]$Fixture, [string[]]$DataTargets, [string]$OutRel, [
 
 Invoke-Gen "smoke" @("json") "smoke/json"
 $coreTargets = @(
-    "json","json2","xml","yaml","lua","bin","bin-offset","bson","msgpack",
+    "json","json2","xml","yaml","lua","erlang","bin","bin-offset","bson","msgpack",
     "protobuf2-json","protobuf3-json","flatbuffers-json","json-convert",
     "protobuf2-bin","protobuf3-bin"
 )

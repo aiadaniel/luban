@@ -21,7 +21,7 @@ gen() {
 
 gen smoke "smoke/json" -d json
 
-for t in json json2 xml yaml lua bin bin-offset bson msgpack \
+for t in json json2 xml yaml lua erlang bin bin-offset bson msgpack \
          protobuf2-json protobuf3-json flatbuffers-json json-convert \
          protobuf2-bin protobuf3-bin; do
   gen core "core/$t" -d "$t"

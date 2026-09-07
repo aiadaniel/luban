@@ -89,9 +89,10 @@ public class ErlangDataTarget : DataTargetBase
 
     protected override string DefaultOutputFileExt => "erl";
 
+    // Erlang requires the module name to match the erl file name, which comes from OutputDataFile.
     private static string GetModuleName(DefTable t)
     {
-        return t.FullName.Replace('.', '_').ToLowerInvariant();
+        return t.OutputDataFile.ToLowerInvariant();
     }
 
     public override OutputFile ExportTable(DefTable table, List<Record> records)
@@ -109,6 +110,7 @@ public class ErlangDataTarget : DataTargetBase
         {
             ExportTableList(table, records, s);
         }
+        s.AppendLine();
         return CreateOutputFile($"{table.OutputDataFile}.{OutputFileExt}", s.ToString());
     }
 }

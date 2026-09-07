@@ -1,0 +1,9 @@
+-module(tbscore).
+-export([get_data_list/0]).
+
+get_data_list() ->
+	[
+	#{'uid' => 1,'stage' => 1,'score' => 100},
+	#{'uid' => 1,'stage' => 2,'score' => 200},
+	#{'uid' => 2,'stage' => 1,'score' => 150}
+	].
